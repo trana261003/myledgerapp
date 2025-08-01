@@ -1,0 +1,37 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f2f5;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.ledger-card {
+  border: 1px solid #ccc;
+  padding: 16px;
+  margin-top: 16px;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+.entries-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+.entries-table th, .entries-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.entries-table th {
+  background-color: #eee;
+}

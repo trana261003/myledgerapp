@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Ledger</title>
+  <script defer src="script.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7fa;
+      color: #333;
+    }
+
+    nav {
+      background-color: #005a9c;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+
+    nav h2 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    nav .nav-links a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    nav .nav-links a:hover {
+      color: #ffc107;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 2rem auto;
+      background-color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    form label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: 600;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    #entries {
+      margin: 1rem 0;
+    }
+
+    .entry-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .entry-row input {
+      flex: 1;
+    }
+
+    button {
+      padding: 0.7rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      background-color: #007bff;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .total {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    .links {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .links a {
+      text-decoration: none;
+      color: #007bff;
+      margin: 0 10px;
+      font-weight: 600;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <h2>Ledger Manager</h2>
+    <div class="nav-links">
+      <a href="balance.html">Balance Sheet</a>
+      <a href="ledger.html">Ledger Names</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Create New Ledger</h1>
+
+    <form id="ledgerForm">
+      <label for="bankName">Bank Name:</label>
+      <input type="text" id="bankName" required>
+
+      <label for="ledgerName">Ledger Name:</label>
+      <input type="text" id="ledgerName" required>
+
+      <label for="type">Credit/Debit:</label>
+      <select id="type" required>
+        <option value="Credit">Credit</option>
+        <option value="Debit">Debit</option>
+      </select>
+
+      <label for="year">Year:</label>
+      <select id="year" required>
+        <option value="2023-24">2023-24</option>
+        <option value="2024-25">2024-25</option>
+        <option value="2025-26">2025-26</option>
+        <option value="2026-27">2026-27</option>
+        <option value="2027-28">2027-28</option>
+        <option value="2028-29">2028-29</option>
+        <option value="2029-30">2029-30</option>
+      </select>
+
+      <h3>Entries</h3>
+      <div id="entries"></div>
+      <button type="button" onclick="addEntry()">Add Entry</button>
+
+      <div class="total">Total: ₹<span id="totalAmount">0</span></div>
+
+      <button type="submit">Save Ledger</button>
+
+      <div class="links">
+        <a href="balance.html">Balance Sheet</a> |
+        <a href="ledger.html">Ledger Names</a>
+      </div>
+    </form>
+  </div>
+
+</body>
+
+</html>
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Ledger</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7fa;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    h1, h3, h4 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    form {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      transition: 0.3s;
+    }
+
+    input[type="text"]:focus, select:focus {
+      border-color: #3498db;
+      outline: none;
+    }
+
+    #entries {
+      margin-bottom: 15px;
+    }
+
+    .entry-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .entry-row input {
+      flex: 1;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button[type="button"], button[type="submit"] {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+      margin-right: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      color: #3498db;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    #totalAmount {
+      font-weight: bold;
+      color: #27ae60;
+    }
+  </style>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <h1>Create New Ledger</h1>
+
+  <form id="ledgerForm">
+    <label>Bank Name:
+      <input type="text" id="bankName" required>
+    </label>
+
+    <label>Ledger Name:
+      <input type="text" id="ledgerName" required>
+    </label>
+
+    <label>Credit/Debit:
+      <select id="type" required>
+        <option value="Credit">Credit</option>
+        <option value="Debit">Debit</option>
+      </select>
+    </label>
+
+    <label>Year:
+      <select id="year" required>
+        <option value="2023-24">2023-24</option>
+        <option value="2024-25">2024-25</option>
+        <option value="2025-26">2025-26</option>
+        <option value="2026-27">2026-27</option>
+        <option value="2027-28">2027-28</option>
+        <option value="2028-29">2028-29</option>
+        <option value="2029-30">2029-30</option>
+      </select>
+    </label>
+
+    <h3>Entries</h3>
+    <div id="entries"></div>
+    <button type="button" onclick="addEntry()">Add Entry</button>
+
+    <h4>Total: ₹<span id="totalAmount">0</span></h4>
+
+    <button type="submit">Save Ledger</button>
+    <a href="balance.html">Balance Sheet</a>
+    <a href="ledger.html">Ledger Names</a>
+  </form>
+</body>
+</html> -->
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Ledger</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <h1>Create New Ledger</h1>
+
+  <form id="ledgerForm">
+    <label>Bank Name: <input type="text" id="bankName" required></label><br>
+    <label>Ledger Name: <input type="text" id="ledgerName" required></label><br>
+    <label>Credit/Debit:
+      <select id="type" required>
+        <option value="Credit">Credit</option>
+        <option value="Debit">Debit</option>
+      </select>
+    </label><br>
+    <label>Year:
+      <select id="year" required>
+        <option value="2023-24">2023-24</option>
+        <option value="2024-25">2024-25</option>
+      </select>
+    </label><br>
+
+    <h3>Entries</h3>
+    <div id="entries"></div>
+    <button type="button" onclick="addEntry()">Add Entry</button>
+
+    <h4>Total: ₹<span id="totalAmount">0</span></h4>
+
+    <button type="submit">Save Ledger</button>
+    <a href="balance.html">Balancce sheet</a>
+    <a href="ledger.html">ledger names</a>
+  </form>
+</body>
+</html> -->

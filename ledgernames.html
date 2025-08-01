@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ledger Names</title>
+</head>
+<body>
+  <h1>Ledger Names</h1>
+  <ul id="ledgerList"></ul>
+
+  <script>
+    async function fetchLedgerNames() {
+      try {
+        const res = await fetch('http://localhost:5000/api/ledger-names');
+        const names = await res.json();
+
+        const list = document.getElementById('ledgerList');
+        list.innerHTML = '';
+
+        names.forEach(name => {
+          const li = document.createElement('li');
+          li.textContent = name;
+          list.appendChild(li);
+        });
+      } catch (error) {
+        console.error('Error fetching ledger names:', error);
+      }
+    }
+
+    fetchLedgerNames();
+  </script>
+</body>
+</html>

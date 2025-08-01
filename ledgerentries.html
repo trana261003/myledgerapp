@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ledger Entries</title>
+  <style>
+    /* Reset & Base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f9;
+      color: #2c3e50;
+      padding-top: 80px;
+    }
+
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: #1e3a8a;
+      color: white;
+      z-index: 999;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .nav-links a {
+      color: white;
+      margin-left: 1.5rem;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: #93c5fd;
+    }
+
+    /* Headings */
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #1f2937;
+    }
+
+    #ledgerName {
+      text-align: center;
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      color: #374151;
+    }
+
+    /* Entry List Layout */
+    #entryList {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .entry-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      transition: transform 0.3s ease;
+    }
+
+    .entry-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .entry-header {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #2563eb;
+    }
+
+    .entry-year {
+      font-size: 1rem;
+      color: #6b7280;
+    }
+
+    .entry-meta {
+      font-size: 0.95rem;
+      color: #6b7280;
+      margin-bottom: 0.75rem;
+    }
+
+    .sub-entry {
+      background-color: #f9fafb;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+      color: #374151;
+      border-left: 4px solid #3b82f6;
+    }
+
+    .no-sub-entry {
+      padding-left: 1rem;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    .no-entries {
+      text-align: center;
+      color: #6b7280;
+      font-size: 1rem;
+      margin-top: 2rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      .nav-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      .nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      #ledgerName {
+        font-size: 1rem;
+      }
+
+      .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .entry-card {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <span class="logo">📒 My Ledger App</span>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="balance.html">Balance Sheet</a>
+        <a href="ledger.html">Ledger Names</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <h1>📘 Ledger Entries</h1>
+  <div id="ledgerName"></div>
+  <div id="entryList"></div>
+
+  <script>
+    async function fetchLedgerEntries() {
+      const params = new URLSearchParams(window.location.search);
+      const name = params.get('name');
+      document.getElementById('ledgerName').textContent = `Ledger Name: ${name}`;
+
+      try {
+        const res = await fetch(`http://localhost:5000/api/ledger-entries/${encodeURIComponent(name)}`);
+        const data = await res.json();
+
+        const container = document.getElementById('entryList');
+        container.innerHTML = '';
+
+        if (!data.length) {
+          container.innerHTML = '<div class="no-entries">No entries found.</div>';
+          return;
+        }
+
+        data.forEach(ledger => {
+          const card = document.createElement('div');
+          card.className = 'entry-card';
+
+          // Header section
+          const headerRow = document.createElement('div');
+          headerRow.className = 'card-header';
+
+          const title = document.createElement('div');
+          title.className = 'entry-header';
+          title.textContent = `Type: ${ledger.type} — Total: ₹${ledger.total}`;
+
+          const year = document.createElement('div');
+          year.className = 'entry-year';
+          year.textContent = `Year: ${ledger.year}`;
+
+          headerRow.appendChild(title);
+          headerRow.appendChild(year);
+          card.appendChild(headerRow);
+
+          // Meta info
+          const meta = document.createElement('div');
+          meta.className = 'entry-meta';
+          meta.textContent = `Bank Name: ${ledger.bankName}`;
+          card.appendChild(meta);
+
+          // Sub-entries
+          if (!ledger.entries || !ledger.entries.length) {
+            const noEntry = document.createElement('div');
+            noEntry.className = 'no-sub-entry';
+            noEntry.textContent = 'No sub-entries found.';
+            card.appendChild(noEntry);
+          } else {
+            ledger.entries.forEach(sub => {
+              const subItem = document.createElement('div');
+              subItem.className = 'sub-entry';
+              subItem.textContent = `Date: ${sub.date} — Amount: ₹${sub.amount}`;
+              card.appendChild(subItem);
+            });
+          }
+
+          container.appendChild(card);
+        });
+
+      } catch (error) {
+        console.error('Error fetching ledger entries:', error);
+        document.getElementById('entryList').innerHTML =
+          '<div class="no-entries">⚠️ Error loading data.</div>';
+      }
+    }
+
+    fetchLedgerEntries();
+  </script>
+</body>
+</html>
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ledger Entries</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 2rem;
+      font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+      background-color: #f4f6f9;
+      color: #2c3e50;
+    }
+    
+
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #1f2937;
+    }
+
+    #ledgerName {
+      text-align: center;
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      color: #374151;
+    }
+
+    #entryList {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .entry-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      transition: transform 0.3s ease;
+    }
+
+    .entry-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .entry-header {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #2563eb;
+    }
+
+    .entry-year {
+      font-size: 1rem;
+      color: #6b7280;
+    }
+
+    .entry-meta {
+      font-size: 0.95rem;
+      color: #6b7280;
+      margin-bottom: 0.75rem;
+    }
+
+    .sub-entry {
+      background-color: #f9fafb;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+      color: #374151;
+      border-left: 4px solid #3b82f6;
+    }
+
+    .no-sub-entry {
+      padding-left: 1rem;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    .no-entries {
+      text-align: center;
+      color: #6b7280;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 1rem;
+      }
+
+      .entry-card {
+        padding: 1rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      #ledgerName {
+        font-size: 1rem;
+      }
+
+      .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      .entry-year {
+        align-self: flex-end;
+      }
+    }
+  </style>
+</head>
+<body>
+    <nav class="navbar">
+  <div class="nav-container">
+    <span class="logo">My Ledger App</span>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="balance.html">Balance Sheet</a>
+      <a href="ledger.html">Ledger Names</a>
+    </div>
+  </div>
+</nav>
+
+  <h1>📘 Ledger Entries</h1>
+  <div id="ledgerName"></div>
+  <div id="entryList"></div>
+
+  <script>
+    async function fetchLedgerEntries() {
+      const params = new URLSearchParams(window.location.search);
+      const name = params.get('name');
+      document.getElementById('ledgerName').textContent = `Ledger Name: ${name}`;
+
+      try {
+        const res = await fetch(`http://localhost:5000/api/ledger-entries/${encodeURIComponent(name)}`);
+        const data = await res.json();
+
+        const container = document.getElementById('entryList');
+        container.innerHTML = '';
+
+        if (!data.length) {
+          container.innerHTML = '<div class="no-entries">No entries found.</div>';
+          return;
+        }
+
+        data.forEach(ledger => {
+          const card = document.createElement('div');
+          card.className = 'entry-card';
+
+          // Header section (flex: Total left, Year right)
+          const headerRow = document.createElement('div');
+          headerRow.className = 'card-header';
+
+          const title = document.createElement('div');
+          title.className = 'entry-header';
+          title.textContent = `Type: ${ledger.type} Total: ₹${ledger.total} `;
+
+          const year = document.createElement('div');
+          year.className = 'entry-year';
+          year.textContent = `Year: ${ledger.year}`;
+
+          headerRow.appendChild(title);
+          headerRow.appendChild(year);
+          card.appendChild(headerRow);
+
+          // Meta: type
+          const meta = document.createElement('div');
+          meta.className = 'entry-meta';
+          meta.textContent = `Bank Name: ${ledger.bankName}`;
+          card.appendChild(meta);
+
+          // Sub-entries
+          if (ledger.entries.length === 0) {
+            const noEntry = document.createElement('div');
+            noEntry.className = 'no-sub-entry';
+            noEntry.textContent = 'No sub-entries found.';
+            card.appendChild(noEntry);
+          } else {
+            ledger.entries.forEach(sub => {
+              const subItem = document.createElement('div');
+              subItem.className = 'sub-entry';
+              subItem.textContent = `Date: ${sub.date} — Amount: ₹${sub.amount}`;
+              card.appendChild(subItem);
+            });
+          }
+
+          container.appendChild(card);
+        });
+
+      } catch (error) {
+        console.error('Error fetching ledger entries:', error);
+        document.getElementById('entryList').innerHTML =
+          '<div class="no-entries">⚠️ Error loading data.</div>';
+      }
+    }
+
+    fetchLedgerEntries();
+  </script>
+</body>
+</html> -->
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ledger Entries</title>
+</head>
+<body>
+  <h1>Ledger Entries</h1>
+  <div id="ledgerName"></div>
+  <ul id="entryList"></ul>
+
+  <script>
+    async function fetchLedgerEntries() {
+      const params = new URLSearchParams(window.location.search);
+      const name = params.get('name');
+      document.getElementById('ledgerName').textContent = `Ledger: ${name}`;
+
+      try {
+        const res = await fetch(`http://localhost:5000/api/ledger-entries/${encodeURIComponent(name)}`);
+        const data = await res.json();
+
+        const list = document.getElementById('entryList');
+        list.innerHTML = '';
+
+        if (data.length === 0) {
+          list.innerHTML = '<li>No entries found.</li>';
+          return;
+        }
+
+        // Each item in `data` is a ledger document
+        data.forEach(ledger => {
+          const header = document.createElement('li');
+          header.innerHTML = `<strong>${ledger.year}</strong> | Type: ${ledger.type} | Total: ₹${ledger.total}`;
+          list.appendChild(header);
+
+          if (ledger.entries.length === 0) {
+            const noEntry = document.createElement('li');
+            noEntry.textContent = '  └ No sub-entries found.';
+            list.appendChild(noEntry);
+          }
+
+          // Loop through the sub-entries (date + amount)
+          ledger.entries.forEach(sub => {
+            const subItem = document.createElement('li');
+            subItem.textContent = `  └ Date: ${sub.date}, Amount: ₹${sub.amount}`;
+            list.appendChild(subItem);
+          });
+        });
+
+      } catch (error) {
+        console.error('Error fetching ledger entries:', error);
+      }
+    }
+
+    fetchLedgerEntries();
+  </script>
+</body>
+</html> -->
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ledger Entries</title>
+</head>
+<body>
+  <h1>Ledger Entries</h1>
+  <div id="ledgerName"></div>
+  <ul id="entryList"></ul>
+
+  <script>
+    async function fetchLedgerEntries() {
+      const params = new URLSearchParams(window.location.search);
+      const name = params.get('name');
+      document.getElementById('ledgerName').textContent = `Ledger: ${name}`;
+
+      try {
+        const res = await fetch(`http://localhost:5000/api/ledger-entries/${encodeURIComponent(name)}`);
+        const entries = await res.json();
+
+        const list = document.getElementById('entryList');
+        list.innerHTML = '';
+
+        if (entries.length === 0) {
+          list.innerHTML = '<li>No entries found.</li>';
+        }
+
+        entries.forEach(entry => {
+          const li = document.createElement('li');
+          li.textContent = `Date: ${entry.year || 'N/A'}, Amount: ${entry.entries || 'N/A'}, Type: ${entry.type || 'N/A'}`;
+          list.appendChild(li);
+        });
+      } catch (error) {
+        console.error('Error fetching ledger entries:', error);
+      }
+    }
+
+    fetchLedgerEntries();
+  </script>
+</body>
+</html> -->

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ledger Names</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #e0f7fa, #ffffff);
+      padding-top: 80px;
+      color: #333;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background-color: #004d40;
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      z-index: 999;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    .nav-links a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #ffffff;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #b2dfdb;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #00796b;
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+
+    ul {
+      list-style: none;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    li {
+      background-color: #ffffff;
+      margin: 12px 0;
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    li:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    }
+
+    a {
+      text-decoration: none;
+      color: #00796b;
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .nav-container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav-links {
+        margin-top: 10px;
+      }
+
+      .nav-links a {
+        display: block;
+        margin: 5px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <span class="logo">My Ledger App</span>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="balance.html">Balance Sheet</a>
+      </div>
+    </div>
+  </nav>
+
+  <h1>Ledger Names</h1>
+  <ul id="ledgerList"></ul>
+
+  <script>
+    async function fetchLedgerNames() {
+      try {
+        const res = await fetch('http://localhost:5000/api/ledger-names');
+        const names = await res.json();
+
+        const list = document.getElementById('ledgerList');
+        list.innerHTML = '';
+
+        names.forEach(name => {
+          const li = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = `ledgerentries.html?name=${encodeURIComponent(name)}`;
+          link.textContent = name;
+          li.appendChild(link);
+          list.appendChild(li);
+        });
+      } catch (error) {
+        console.error('Error fetching ledger names:', error);
+      }
+    }
+
+    fetchLedgerNames();
+  </script>
+
+</body>
+</html>
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ledger Names</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #e0f7fa, #ffffff);
+      padding: 40px;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #00796b;
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+
+    ul {
+      list-style: none;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0;
+    }
+
+    li {
+      background-color: #ffffff;
+      margin: 12px 0;
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    li:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    }
+
+    a {
+      text-decoration: none;
+      color: #00796b;
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+  <div class="nav-container">
+    <span class="logo">My Ledger App</span>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="balance.html">Balance Sheet</a>
+    </div>
+  </div>
+</nav>
+
+  <h1>Ledger Names</h1>
+  <ul id="ledgerList"></ul>
+
+  <script>
+    async function fetchLedgerNames() {
+      try {
+        const res = await fetch('http://localhost:5000/api/ledger-names');
+        const names = await res.json();
+
+        const list = document.getElementById('ledgerList');
+        list.innerHTML = '';
+
+        names.forEach(name => {
+          const li = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = `ledgerentries.html?name=${encodeURIComponent(name)}`;
+          link.textContent = name;
+          li.appendChild(link);
+          list.appendChild(li);
+        });
+      } catch (error) {
+        console.error('Error fetching ledger names:', error);
+      }
+    }
+
+    fetchLedgerNames();
+  </script>
+</body>
+</html> -->
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ledger Names</title>
+</head>
+<body>
+  <h1>Ledger Names</h1>
+  <ul id="ledgerList"></ul>
+
+  <script>
+    async function fetchLedgerNames() {
+      try {
+        const res = await fetch('http://localhost:5000/api/ledger-names');
+        const names = await res.json();
+
+        const list = document.getElementById('ledgerList');
+        list.innerHTML = '';
+
+        names.forEach(name => {
+          const li = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = `ledgerentries.html?name=${encodeURIComponent(name)}`;
+          link.textContent = name;
+          li.appendChild(link);
+          list.appendChild(li);
+        });
+      } catch (error) {
+        console.error('Error fetching ledger names:', error);
+      }
+    }
+
+    fetchLedgerNames();
+  </script>
+</body>
+</html> -->
