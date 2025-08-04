@@ -33,8 +33,61 @@ function updateTotal() {
   document.getElementById("totalAmount").textContent = total.toFixed(2);
 }
 
+// document.getElementById("ledgerForm").addEventListener("submit", async function (e) {
+//   e.preventDefault();
+
+//   const personName = document.getElementById("personName").value;
+//   const bankName = document.getElementById("bankName").value;
+//   const ledgerName = document.getElementById("ledgerName").value;
+//   const type = document.getElementById("type").value;
+//   const year = document.getElementById("year").value;
+
+//   const entryRows = document.querySelectorAll(".entry-row");
+//   const entryData = [];
+
+//   entryRows.forEach(row => {
+//     const [dateInput, amountInput] = row.querySelectorAll("input");
+//     entryData.push({
+//       date: dateInput.value,
+//       amount: parseFloat(amountInput.value)
+//     });
+//   });
+
+//   const total = entryData.reduce((sum, entry) => sum + entry.amount, 0);
+
+//   const data = {
+//     personName,
+//     bankName,
+//     ledgerName,
+//     type,
+//     year,
+//     entries: entryData,
+//     total
+//   };
+
+//   try {
+//     console.log("Data being sent:", data);
+//     const res = await fetch("https://myledgerappbackend.onrender.com/api/ledger", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json"
+//       },
+//       body: JSON.stringify(data)
+//     });
+
+//     const result = await res.json();
+//     alert("Ledger saved successfully!");
+//     window.location.reload();
+//   } catch (err) {
+//     alert("Error saving ledger");
+//     console.error(err);
+//   }
+// });
+
 document.getElementById("ledgerForm").addEventListener("submit", async function (e) {
   e.preventDefault();
+
+  showSubmitLoader(); // Show loader on submit
 
   const personName = document.getElementById("personName").value;
   const bankName = document.getElementById("bankName").value;
@@ -66,7 +119,6 @@ document.getElementById("ledgerForm").addEventListener("submit", async function 
   };
 
   try {
-    console.log("Data being sent:", data);
     const res = await fetch("https://myledgerappbackend.onrender.com/api/ledger", {
       method: "POST",
       headers: {
@@ -75,11 +127,16 @@ document.getElementById("ledgerForm").addEventListener("submit", async function 
       body: JSON.stringify(data)
     });
 
+    if (!res.ok) throw new Error("Failed to save");
+
     const result = await res.json();
     alert("Ledger saved successfully!");
     window.location.reload();
   } catch (err) {
     alert("Error saving ledger");
     console.error(err);
+  } finally {
+    hideSubmitLoader(); // Always hide loader
   }
 });
+
