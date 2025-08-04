@@ -17,7 +17,6 @@
       color: #333;
     }
 
-    /* Navbar */
     nav {
       background-color: #005a9c;
       padding: 1rem 1.5rem;
@@ -168,6 +167,27 @@
       margin-top: 2rem;
     }
 
+    .sub-entry input {
+      padding: 4px 8px;
+      margin: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .sub-entry button {
+      margin-left: 10px;
+      padding: 4px 8px;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .sub-entry button:hover {
+      background-color: #1d4ed8;
+    }
+
     #loaderContainer {
       position: fixed;
       top: 0;
@@ -199,6 +219,14 @@
         padding: 1rem;
       }
     }
+
+    .sub-entry-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
   </style>
 </head>
 
@@ -239,7 +267,6 @@
       path: 'animations/Sandy Loading.json'
     });
 
-    // Toggle mobile nav
     const hamburger = document.getElementById('hamburger');
     const navLinks = document.getElementById('navLinks');
 
@@ -247,7 +274,6 @@
       navLinks.classList.toggle('active');
     });
 
-    // Auto-close nav on link click (for mobile)
     document.querySelectorAll('.nav-links a').forEach(link => {
       link.addEventListener('click', () => {
         if (window.innerWidth < 768) {
@@ -256,7 +282,6 @@
       });
     });
 
-    // Fetch ledger data
     async function fetchLedgerEntries() {
       const params = new URLSearchParams(window.location.search);
       const name = params.get('name');
@@ -264,6 +289,7 @@
 
       try {
         const res = await fetch(`https://myledgerappbackend.onrender.com/api/ledger-entries/${encodeURIComponent(name)}`);
+        // const res = await fetch(`http://localhost:5000/api/ledger-entries/${encodeURIComponent(name)}`);
         const data = await res.json();
 
         const container = document.getElementById('entryList');
@@ -305,12 +331,75 @@
             noEntry.textContent = 'No sub-entries found.';
             card.appendChild(noEntry);
           } else {
-            ledger.entries.forEach(sub => {
-              const subItem = document.createElement('div');
-              subItem.className = 'sub-entry';
-              subItem.textContent = `Date: ${sub.date} — Amount: ₹${sub.amount}`;
-              card.appendChild(subItem);
-            });
+ledger.entries.forEach(sub => {
+  const subItem = document.createElement('div');
+  subItem.className = 'sub-entry';
+
+  const subContent = document.createElement('div');
+  subContent.className = 'sub-entry-content';
+
+  const textPart = document.createElement('span');
+  textPart.textContent = `Date: ${sub.date} — Amount: ₹${sub.amount}`;
+
+  const editBtn = document.createElement('button');
+  editBtn.textContent = 'Edit';
+
+  editBtn.addEventListener('click', () => {
+    const dateInput = document.createElement('input');
+    dateInput.type = 'date';
+    dateInput.value = sub.date;
+
+    const amountInput = document.createElement('input');
+    amountInput.type = 'number';
+    amountInput.value = sub.amount;
+
+    const saveBtn = document.createElement('button');
+    saveBtn.textContent = 'Save';
+
+    subItem.innerHTML = '';
+    subItem.appendChild(dateInput);
+    subItem.appendChild(amountInput);
+    subItem.appendChild(saveBtn);
+
+    saveBtn.addEventListener('click', async () => {
+      const updatedDate = dateInput.value;
+      const updatedAmount = parseFloat(amountInput.value);
+
+      if (!updatedDate || isNaN(updatedAmount)) {
+        alert('Please enter valid date and amount');
+        return;
+      }
+
+      try {
+        const res = await fetch(`https://myledgerappbackend.onrender.com/api/ledger/update-entry/${ledger._id}/${sub._id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ date: updatedDate, amount: updatedAmount }),
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+          alert('Entry updated successfully!');
+          fetchLedgerEntries(); // Reload data
+        } else {
+          alert(result.error || 'Failed to update entry');
+        }
+      } catch (error) {
+        console.error('Update error:', error);
+        alert('Error updating entry');
+      }
+    });
+  });
+
+  subContent.appendChild(textPart);
+  subContent.appendChild(editBtn);
+  subItem.appendChild(subContent);
+  card.appendChild(subItem);
+});
+
           }
 
           container.appendChild(card);
@@ -326,9 +415,6 @@
     }
 
     fetchLedgerEntries();
-        function toggleMenu() {
-      document.getElementById('navLinks').classList.toggle('active');
-    }
   </script>
 </body>
 </html>
