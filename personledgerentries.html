@@ -5,17 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Person Ledger Entries</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f4f7fa;
       color: #333;
     }
-
     nav {
       background-color: #005a9c;
       padding: 1rem 1.5rem;
@@ -26,34 +22,16 @@
       position: relative;
       z-index: 10;
     }
-
-    nav h2 {
-      margin: 0;
-      font-size: 1.5rem;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 20px;
-    }
-
+    nav h2 { margin: 0; font-size: 1.5rem; }
+    .nav-links { display: flex; gap: 20px; }
     .nav-links a {
       color: white;
       text-decoration: none;
       font-weight: 500;
       transition: color 0.3s;
     }
-
-    .nav-links a:hover {
-      color: #ffc107;
-    }
-
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      cursor: pointer;
-    }
-
+    .nav-links a:hover { color: #ffc107; }
+    .hamburger { display: none; flex-direction: column; cursor: pointer; }
     .hamburger span {
       height: 3px;
       width: 25px;
@@ -61,12 +39,8 @@
       margin: 4px 0;
       border-radius: 2px;
     }
-
     @media (max-width: 768px) {
-      .hamburger {
-        display: flex;
-      }
-
+      .hamburger { display: flex; }
       .nav-links {
         display: none;
         flex-direction: column;
@@ -77,26 +51,10 @@
         width: 100%;
         padding: 1rem;
       }
-
-      .nav-links.active {
-        display: flex;
-      }
+      .nav-links.active { display: flex; }
     }
-
-    h1 {
-      text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      color: #1f2937;
-    }
-
-    #ledgerName {
-      text-align: center;
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
-      color: #374151;
-    }
-
+    h1 { text-align: center; font-size: 2.5rem; margin-bottom: 1rem; color: #1f2937; }
+    #ledgerName { text-align: center; font-size: 1.25rem; margin-bottom: 2rem; color: #374151; }
     #entryList {
       display: flex;
       flex-direction: column;
@@ -105,7 +63,6 @@
       margin: 0 auto;
       padding: 0 1rem;
     }
-
     .entry-card {
       background-color: #ffffff;
       border-radius: 12px;
@@ -113,11 +70,7 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
       transition: transform 0.3s ease;
     }
-
-    .entry-card:hover {
-      transform: translateY(-4px);
-    }
-
+    .entry-card:hover { transform: translateY(-4px); }
     .card-header {
       display: flex;
       justify-content: space-between;
@@ -125,24 +78,13 @@
       margin-bottom: 0.75rem;
       flex-wrap: wrap;
     }
-
-    .entry-header {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #2563eb;
-    }
-
-    .entry-year {
-      font-size: 1rem;
-      color: #6b7280;
-    }
-
+    .entry-header { font-size: 1.2rem; font-weight: 600; color: #2563eb; }
+    .entry-year { font-size: 1rem; color: #6b7280; }
     .entry-meta {
       font-size: 0.95rem;
       color: #6b7280;
       margin-bottom: 0.75rem;
     }
-
     .sub-entry {
       background-color: #f9fafb;
       padding: 0.6rem 1rem;
@@ -152,13 +94,17 @@
       color: #374151;
       border-left: 4px solid #3b82f6;
     }
-
+    .sub-entry-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
     .no-sub-entry {
       padding-left: 1rem;
       color: #9ca3af;
       font-style: italic;
     }
-
     .no-entries {
       text-align: center;
       color: #6b7280;
@@ -166,45 +112,48 @@
       margin-top: 2rem;
     }
 
+        .sub-entry input {
+      padding: 4px 8px;
+      margin: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .sub-entry button {
+      margin-left: 10px;
+      padding: 4px 8px;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .sub-entry button:hover {
+      background-color: #1d4ed8;
+    }
     .loading {
       display: flex;
       justify-content: center;
       margin-top: 60px;
     }
-
-    #loader {
-      width: 120px;
-      height: 120px;
-    }
-
+    #loader { width: 120px; height: 120px; }
     @media (max-width: 600px) {
-      h1 {
-        font-size: 2rem;
-      }
-
-      #ledgerName {
-        font-size: 1rem;
-      }
-
+      h1 { font-size: 2rem; }
+      #ledgerName { font-size: 1rem; }
       .card-header {
         flex-direction: column;
         align-items: flex-start;
       }
-
-      .entry-card {
-        padding: 1rem;
-      }
+      .entry-card { padding: 1rem; }
     }
   </style>
 </head>
 <body>
-  <!-- Navbar -->
   <nav>
     <h2>📒 Ledger Manager</h2>
     <div class="hamburger" onclick="toggleMenu()">
-      <span></span>
-      <span></span>
-      <span></span>
+      <span></span><span></span><span></span>
     </div>
     <div class="nav-links" id="navLinks">
       <a href="index.html" onclick="closeMenu()">Home</a>
@@ -213,23 +162,12 @@
       <a href="ledger.html" onclick="closeMenu()">Ledger Names</a>
     </div>
   </nav>
-
-  <!-- Page Content -->
   <h1>📘 Person Ledger Entries</h1>
   <div id="ledgerName"></div>
-
-  <!-- Loader -->
-  <div class="loading" id="loading">
-    <div id="loader"></div>
-  </div>
-
+  <div class="loading" id="loading"><div id="loader"></div></div>
   <div id="entryList"></div>
-
-  <!-- Lottie player -->
   <script src="./cdn/lottie.min.js"></script>
-
   <script>
-    // Load Lottie animation
     const loaderAnim = lottie.loadAnimation({
       container: document.getElementById('loader'),
       renderer: 'svg',
@@ -246,7 +184,6 @@
       try {
         const res = await fetch(`https://myledgerappbackend.onrender.com/api/ledger-entries/person/${encodeURIComponent(name)}`);
         const data = await res.json();
-
         const container = document.getElementById('entryList');
         container.innerHTML = '';
         document.getElementById('loading').style.display = 'none';
@@ -289,14 +226,71 @@
             ledger.entries.forEach(sub => {
               const subItem = document.createElement('div');
               subItem.className = 'sub-entry';
-              subItem.textContent = `Date: ${sub.date} — Amount: ₹${Number(sub.amount).toFixed(2)}`;
+
+              const subContent = document.createElement('div');
+              subContent.className = 'sub-entry-content';
+
+              const textPart = document.createElement('span');
+              textPart.textContent = `Date: ${sub.date} — Amount: ₹${Number(sub.amount).toFixed(2)}`;
+
+              const editBtn = document.createElement('button');
+              editBtn.textContent = 'Edit';
+              editBtn.addEventListener('click', () => {
+                const dateInput = document.createElement('input');
+                dateInput.type = 'date';
+                dateInput.value = sub.date;
+
+                const amountInput = document.createElement('input');
+                amountInput.type = 'number';
+                amountInput.value = sub.amount;
+
+                const saveBtn = document.createElement('button');
+                saveBtn.textContent = 'Save';
+
+                subItem.innerHTML = '';
+                subItem.appendChild(dateInput);
+                subItem.appendChild(amountInput);
+                subItem.appendChild(saveBtn);
+
+                saveBtn.addEventListener('click', async () => {
+                  const updatedDate = dateInput.value;
+                  const updatedAmount = parseFloat(amountInput.value);
+
+                  if (!updatedDate || isNaN(updatedAmount)) {
+                    alert('Please enter valid date and amount');
+                    return;
+                  }
+
+                  try {
+                    const res = await fetch(`https://myledgerappbackend.onrender.com/api/ledger/update-entry/${ledger._id}/${sub._id}`, {
+                      method: 'PUT',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ date: updatedDate, amount: updatedAmount }),
+                    });
+
+                    const result = await res.json();
+                    if (res.ok) {
+                      alert('Entry updated successfully!');
+                      fetchLedgerEntries();
+                    } else {
+                      alert(result.error || 'Failed to update entry');
+                    }
+                  } catch (error) {
+                    console.error('Update error:', error);
+                    alert('Error updating entry');
+                  }
+                });
+              });
+
+              subContent.appendChild(textPart);
+              subContent.appendChild(editBtn);
+              subItem.appendChild(subContent);
               card.appendChild(subItem);
             });
           }
 
           container.appendChild(card);
         });
-
       } catch (error) {
         console.error('Error fetching ledger entries:', error);
         document.getElementById('loading').style.display = 'none';
@@ -306,15 +300,8 @@
     }
 
     fetchLedgerEntries();
-
-    function toggleMenu() {
-      document.getElementById('navLinks').classList.toggle('active');
-    }
-
-    function closeMenu() {
-      document.getElementById('navLinks').classList.remove('active');
-    }
+    function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
+    function closeMenu() { document.getElementById('navLinks').classList.remove('active'); }
   </script>
 </body>
 </html>
-
