@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Create Ledger</title>
   <script defer src="script.js"></script>
+  <script src="./cdn/lottie.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -18,13 +19,16 @@
       color: #333;
     }
 
+    /* Navbar */
     nav {
       background-color: #005a9c;
-      padding: 1rem 2rem;
+      padding: 1rem 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       color: white;
+      position: relative;
+      z-index: 10;
     }
 
     nav h2 {
@@ -32,16 +36,55 @@
       font-size: 1.5rem;
     }
 
-    nav .nav-links a {
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-links a {
       color: white;
-      margin-left: 20px;
       text-decoration: none;
       font-weight: 500;
       transition: color 0.3s;
     }
 
-    nav .nav-links a:hover {
+    .nav-links a:hover {
       color: #ffc107;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+    }
+
+    .hamburger span {
+      height: 3px;
+      width: 25px;
+      background: white;
+      margin: 4px 0;
+      border-radius: 2px;
+    }
+
+    @media (max-width: 768px) {
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        background-color: #005a9c;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        width: 100%;
+        padding: 1rem;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
     }
 
     .container {
@@ -81,10 +124,12 @@
       display: flex;
       gap: 10px;
       margin-bottom: 10px;
+      flex-wrap: wrap;
     }
 
     .entry-row input {
       flex: 1;
+      min-width: 45%;
     }
 
     button {
@@ -124,23 +169,65 @@
     .links a:hover {
       text-decoration: underline;
     }
+
+    /* Splash screen */
+    #splashScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    #lottie-animation {
+      width: 300px;
+      height: 300px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
+    }
   </style>
 </head>
 
 <body>
 
+  <!-- Splash screen -->
+  <div id="splashScreen">
+    <div id="lottie-animation"></div>
+  </div>
+
+  <!-- Main Nav -->
   <nav>
-    <h2>Ledger Manager</h2>
-    <div class="nav-links">
+    <h2>📒 Ledger Manager</h2>
+    <div class="hamburger" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="personnames.html">Person Name</a>
       <a href="balance.html">Balance Sheet</a>
       <a href="ledger.html">Ledger Names</a>
+
     </div>
   </nav>
 
   <div class="container">
     <h1>Create New Ledger</h1>
-
     <form id="ledgerForm">
+      <label for="personName">Person Name:</label>
+      <input type="text" id="personName" required>
+
       <label for="bankName">Bank Name:</label>
       <input type="text" id="bankName" required>
 
@@ -153,7 +240,7 @@
         <option value="Debit">Debit</option>
       </select>
 
-      <label for="year">Year:</label>
+      <!-- <label for="year">Year:</label>
       <select id="year" required>
         <option value="2023-24">2023-24</option>
         <option value="2024-25">2024-25</option>
@@ -162,7 +249,11 @@
         <option value="2027-28">2027-28</option>
         <option value="2028-29">2028-29</option>
         <option value="2029-30">2029-30</option>
-      </select>
+      </select> -->
+
+      <label for="year">Year:</label>
+<select id="year" required></select>
+
 
       <h3>Entries</h3>
       <div id="entries"></div>
@@ -179,6 +270,54 @@
     </form>
   </div>
 
+  <script>
+    // Lottie splash screen
+    document.addEventListener("DOMContentLoaded", () => {
+      const splash = document.getElementById("splashScreen");
+      const splashSeen = sessionStorage.getItem("splashSeen");
+
+      if (!splashSeen) {
+        lottie.loadAnimation({
+          container: document.getElementById('lottie-animation'),
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: 'animations/Sandy Loading.json'
+        });
+
+        setTimeout(() => {
+          splash.style.display = "none";
+          sessionStorage.setItem("splashSeen", "true");
+        }, 3000);
+      } else {
+        splash.style.display = "none";
+      }
+    });
+
+    // Mobile hamburger menu toggle
+    function toggleMenu() {
+      document.getElementById('navLinks').classList.toggle('active');
+    }
+
+
+  const startYear = 2024; // starting year
+  const numYears = 50;    // how many years you want to show
+  const yearSelect = document.getElementById('year');
+
+  for (let i = 0; i < numYears; i++) {
+    const first = startYear + i;
+    const second = (first + 1).toString().slice(-2); // get last 2 digits of next year
+    const optionValue = `${first}-${second}`;
+    
+    const option = document.createElement('option');
+    option.value = optionValue;
+    option.textContent = optionValue;
+    yearSelect.appendChild(option);
+  }
+
+
+  </script>
+
 </body>
 
 </html>
@@ -186,195 +325,5 @@
 
 
 
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Create Ledger</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f7fa;
-      margin: 0;
-      padding: 20px;
-      color: #333;
-    }
-
-    h1, h3, h4 {
-      text-align: center;
-      color: #2c3e50;
-    }
-
-    form {
-      max-width: 700px;
-      margin: auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    label {
-      display: block;
-      margin-bottom: 15px;
-      font-weight: 500;
-    }
-
-    input[type="text"], select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      transition: 0.3s;
-    }
-
-    input[type="text"]:focus, select:focus {
-      border-color: #3498db;
-      outline: none;
-    }
-
-    #entries {
-      margin-bottom: 15px;
-    }
-
-    .entry-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .entry-row input {
-      flex: 1;
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    button[type="button"], button[type="submit"] {
-      background-color: #3498db;
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      font-size: 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 10px;
-      margin-right: 10px;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #2980b9;
-    }
-
-    a {
-      display: inline-block;
-      margin-top: 20px;
-      color: #3498db;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    #totalAmount {
-      font-weight: bold;
-      color: #27ae60;
-    }
-  </style>
-  <script defer src="script.js"></script>
-</head>
-<body>
-  <h1>Create New Ledger</h1>
-
-  <form id="ledgerForm">
-    <label>Bank Name:
-      <input type="text" id="bankName" required>
-    </label>
-
-    <label>Ledger Name:
-      <input type="text" id="ledgerName" required>
-    </label>
-
-    <label>Credit/Debit:
-      <select id="type" required>
-        <option value="Credit">Credit</option>
-        <option value="Debit">Debit</option>
-      </select>
-    </label>
-
-    <label>Year:
-      <select id="year" required>
-        <option value="2023-24">2023-24</option>
-        <option value="2024-25">2024-25</option>
-        <option value="2025-26">2025-26</option>
-        <option value="2026-27">2026-27</option>
-        <option value="2027-28">2027-28</option>
-        <option value="2028-29">2028-29</option>
-        <option value="2029-30">2029-30</option>
-      </select>
-    </label>
-
-    <h3>Entries</h3>
-    <div id="entries"></div>
-    <button type="button" onclick="addEntry()">Add Entry</button>
-
-    <h4>Total: ₹<span id="totalAmount">0</span></h4>
-
-    <button type="submit">Save Ledger</button>
-    <a href="balance.html">Balance Sheet</a>
-    <a href="ledger.html">Ledger Names</a>
-  </form>
-</body>
-</html> -->
 
 
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create Ledger</title>
-  <link rel="stylesheet" href="style.css" />
-  <script defer src="script.js"></script>
-</head>
-<body>
-  <h1>Create New Ledger</h1>
-
-  <form id="ledgerForm">
-    <label>Bank Name: <input type="text" id="bankName" required></label><br>
-    <label>Ledger Name: <input type="text" id="ledgerName" required></label><br>
-    <label>Credit/Debit:
-      <select id="type" required>
-        <option value="Credit">Credit</option>
-        <option value="Debit">Debit</option>
-      </select>
-    </label><br>
-    <label>Year:
-      <select id="year" required>
-        <option value="2023-24">2023-24</option>
-        <option value="2024-25">2024-25</option>
-      </select>
-    </label><br>
-
-    <h3>Entries</h3>
-    <div id="entries"></div>
-    <button type="button" onclick="addEntry()">Add Entry</button>
-
-    <h4>Total: ₹<span id="totalAmount">0</span></h4>
-
-    <button type="submit">Save Ledger</button>
-    <a href="balance.html">Balancce sheet</a>
-    <a href="ledger.html">ledger names</a>
-  </form>
-</body>
-</html> -->

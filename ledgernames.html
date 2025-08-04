@@ -12,7 +12,8 @@
   <script>
     async function fetchLedgerNames() {
       try {
-        const res = await fetch('http://localhost:5000/api/ledger-names');
+        // const res = await fetch('http://localhost:5000/api/ledger-names');
+        const res = await fetch('https://myledgerappbackend.onrender.com/api/ledger-names');
         const names = await res.json();
 
         const list = document.getElementById('ledgerList');

@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ledger Names</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Person Names</title>
+
   <style>
     * {
       box-sizing: border-box;
@@ -15,6 +17,19 @@
       background-color: #f4f7fa;
       color: #333;
     }
+
+    /* * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #e0f7fa, #ffffff);
+      padding-top: 80px;
+      color: #333;
+    } */
 
     /* Navbar */
     nav {
@@ -125,17 +140,6 @@
       text-decoration: underline;
     }
 
-    .loading {
-      display: flex;
-      justify-content: center;
-      margin-top: 40px;
-    }
-
-    #loader {
-      width: 120px;
-      height: 120px;
-    }
-
     @media (max-width: 600px) {
       .nav-container {
         flex-direction: column;
@@ -151,10 +155,25 @@
         margin: 5px 0;
       }
     }
+
+    #loader {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px;
+      height: 200px;
+      z-index: 1000;
+    }
+
+    #content {
+      display: none;
+    }
   </style>
 </head>
-<body>
 
+<body>
+  <!-- Main Nav -->
   <nav>
     <h2>📒 Ledger Manager</h2>
     <div class="hamburger" onclick="toggleMenu()">
@@ -171,30 +190,31 @@
     </div>
   </nav>
 
-  <h1>Ledger Names</h1>
+  <!-- Loader animation -->
+  <div id="loader"></div>
 
-  <div class="loading" id="loading">
-    <div id="loader"></div>
+  <!-- Main content -->
+  <div id="content">
+    <h1>Person Names</h1>
+    <ul id="ledgerList"></ul>
   </div>
 
-  <ul id="ledgerList"></ul>
-
-  <!-- Include Lottie player from CDN -->
+  <!-- Lottie Web script -->
   <script src="./cdn/lottie.min.js"></script>
-
   <script>
-    // Load animation
-    const loader = lottie.loadAnimation({
-      container: document.getElementById('loader'),
+    // Load Lottie animation
+    const loaderContainer = document.getElementById('loader');
+    const animation = lottie.loadAnimation({
+      container: loaderContainer,
       renderer: 'svg',
       loop: true,
       autoplay: true,
-      path: 'animations/Sandy Loading.json' // 👈 your local Lottie JSON file
+      path: 'animations/Sandy Loading.json' // Your downloaded JSON file path
     });
 
     async function fetchLedgerNames() {
       try {
-        const res = await fetch('https://myledgerappbackend.onrender.com/api/ledger-names');
+        const res = await fetch('https://myledgerappbackend.onrender.com/api/person-names');
         const names = await res.json();
 
         const list = document.getElementById('ledgerList');
@@ -203,30 +223,26 @@
         names.forEach(name => {
           const li = document.createElement('li');
           const link = document.createElement('a');
-          link.href = `ledgerentries.html?name=${encodeURIComponent(name)}`;
+          link.href = `personledgerentries.html?name=${encodeURIComponent(name)}`;
           link.textContent = name;
           li.appendChild(link);
           list.appendChild(li);
         });
 
-        // Hide loader after data is loaded
-        document.getElementById('loading').style.display = 'none';
+        // Hide loader and show content
+        loaderContainer.style.display = 'none';
+        document.getElementById('content').style.display = 'block';
       } catch (error) {
         console.error('Error fetching ledger names:', error);
-        document.getElementById('loading').innerHTML = 'Failed to load ledger names.';
+        loaderContainer.innerHTML = '<p style="color:red;text-align:center;">Failed to load data.</p>';
       }
     }
 
     fetchLedgerNames();
-        function toggleMenu() {
+    function toggleMenu() {
       document.getElementById('navLinks').classList.toggle('active');
     }
   </script>
-
 </body>
+
 </html>
-
-
-
-
-

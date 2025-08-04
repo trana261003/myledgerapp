@@ -2,103 +2,142 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Balance Sheet</title>
+  <script src="./cdn/html2pdf.bundle.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 0;
     }
 
     body {
-      background-color: #f0f2f5;
-      padding-top: 80px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7fa;
       color: #333;
     }
 
-    .navbar {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background-color: #004d40;
-      color: #fff;
-      z-index: 1000;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .nav-container {
-      max-width: 1200px;
-      margin: auto;
+    nav {
+      background-color: #005a9c;
+      padding: 1rem 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 15px 20px;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
-    .logo {
+    nav h2 {
+      margin: 0;
       font-size: 1.5rem;
-      font-weight: bold;
-      color: #ffffff;
+      color: white;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
     }
 
     .nav-links a {
-      margin-left: 20px;
+      color: white;
       text-decoration: none;
-      color: #ffffff;
       font-weight: 500;
       transition: color 0.3s;
     }
 
     .nav-links a:hover {
-      color: #b2dfdb;
+      color: #ffc107;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+    }
+
+    .hamburger span {
+      height: 3px;
+      width: 25px;
+      background: white;
+      margin: 4px 0;
+      border-radius: 2px;
+    }
+
+    @media (max-width: 768px) {
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        background-color: #005a9c;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        width: 100%;
+        padding: 1rem;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
     }
 
     .container {
       max-width: 1200px;
-      margin: auto;
+      margin: 20px auto;
       background-color: white;
       padding: 2rem;
       border-radius: 10px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
-    h1 {
+    h1, h2 {
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
       color: #00796b;
     }
 
     .input-section {
       text-align: center;
       margin-bottom: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
     }
 
-    input, button {
-      padding: 0.6rem 1rem;
-      margin-right: 1rem;
+    .input-section input {
+      padding: 0.6rem;
       font-size: 1rem;
       border: 1px solid #ccc;
       border-radius: 6px;
+      width: 200px;
     }
 
-    button {
+    .input-section button {
+      padding: 0.6rem 1rem;
+      font-size: 1rem;
       background-color: #007bff;
       color: white;
-      cursor: pointer;
       border: none;
+      border-radius: 6px;
+      cursor: pointer;
     }
 
-    button:hover {
+    .input-section button:hover {
       background-color: #0056b3;
     }
 
     .result-section {
       display: flex;
-      gap: 2rem;
-      margin-top: 2rem;
       flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
     }
 
     .ledger-section {
@@ -106,13 +145,8 @@
       background-color: #fafafa;
       padding: 1.5rem;
       border-radius: 8px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    }
-
-    .ledger-section h2 {
-      text-align: center;
-      color: #333;
-      margin-bottom: 1rem;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      min-width: 300px;
     }
 
     table {
@@ -136,107 +170,112 @@
       color: #666;
     }
 
-    @media (max-width: 768px) {
-      .result-section {
+    @media (max-width: 600px) {
+      nav h2 {
+        font-size: 1.2rem;
+      }
+
+      .input-section {
         flex-direction: column;
+        align-items: center;
+      }
+
+      .input-section input, .input-section button {
+        width: 100%;
+        max-width: 300px;
       }
 
       .ledger-section {
-        width: 100%;
-      }
-
-      .nav-container {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .nav-links {
-        margin-top: 10px;
-      }
-
-      .nav-links a {
-        display: block;
-        margin: 5px 0;
+        flex: 1 1 100%;
       }
     }
   </style>
 </head>
+
 <body>
 
-  <!-- Fixed Navbar -->
-  <nav class="navbar">
-    <div class="nav-container">
-      <span class="logo">My Ledger App</span>
-      <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="balance.html">Balance Sheet</a>
-        <a href="ledger.html">Ledger Names</a>
-      </div>
+  <!-- Navbar -->
+  <nav>
+    <h2>📒 Ledger Manager</h2>
+    <div class="hamburger" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="personnames.html">Person Name</a>
+      <a href="balance.html">Balance Sheet</a>
+      <a href="ledger.html">Ledger Names</a>
     </div>
   </nav>
 
-  <!-- Main Container -->
+  <!-- Main Content -->
   <div class="container">
     <h1>📊 Balance Sheet Viewer</h1>
 
     <div class="input-section">
-      <label for="year">Enter Financial Year (e.g., 2024-25):</label>
-      <input type="text" id="year" placeholder="2024-25" />
-      <button onclick="fetchBalanceSheet()">View Balance Sheet</button>
+      <input type="text" id="personName" placeholder="Person Name" />
+      <input type="text" id="year" placeholder="Year (e.g., 2024-25)" />
+      <button onclick="fetchBalanceSheet()">View</button>
+      <button onclick="downloadPDF()">Download PDF</button>
     </div>
 
-    <div class="result-section" id="balanceSheetResult"></div>
+    <div id="pdfContent">
+      <h2 id="sheetHeader"></h2>
+      <div class="result-section" id="balanceSheetResult"></div>
+    </div>
   </div>
 
-  <!-- Script -->
   <script>
+    let currentPerson = '';
+    let currentYear = '';
+
+    function toggleMenu() {
+      document.getElementById('navLinks').classList.toggle('active');
+    }
+
     async function fetchBalanceSheet() {
       const year = document.getElementById('year').value.trim();
-      if (!year) {
-        alert('Please enter a year');
+      const personName = document.getElementById('personName').value.trim();
+
+      if (!year || !personName) {
+        alert('Please enter both person name and year');
         return;
       }
 
+      currentPerson = personName;
+      currentYear = year;
+
       try {
-        const res = await fetch(`http://localhost:5000/api/balance-sheet/${year}`);
+        const encodedPerson = encodeURIComponent(personName);
+        const res = await fetch(`https://myledgerappbackend.onrender.com/api/balance-sheet/${year}/${encodedPerson}`);
         const data = await res.json();
+
+        document.getElementById('sheetHeader').innerText = `Balance Sheet for ${personName} (${year})`;
 
         const container = document.getElementById('balanceSheetResult');
         container.innerHTML = '';
 
-        // CREDIT SECTION
-        let creditHtml = '<div class="ledger-section"><h2>Credit Ledgers</h2>';
-        if (data.credit.length > 0) {
-          creditHtml += '<table><tr><th>Bank Name</th><th>Ledger Name</th><th>Total</th></tr>';
-          data.credit.forEach(item => {
-            creditHtml += `<tr>
-              <td>${item.bankName}</td>
-              <td>${item.ledgerName}</td>
-              <td>₹${item.total}</td>
-            </tr>`;
-          });
-          creditHtml += '</table>';
-        } else {
-          creditHtml += '<p>No credit records found.</p>';
-        }
-        creditHtml += '</div>';
+        const creditHtml = `
+          <div class="ledger-section">
+            <h2>Credit Ledgers</h2>
+            ${data.credit.length > 0
+              ? `<table><tr><th>Bank Name</th><th>Ledger Name</th><th>Total</th></tr>
+                ${data.credit.map(item => `<tr><td>${item.bankName}</td><td>${item.ledgerName}</td><td>₹${item.total.toFixed(2)}</td></tr>`).join('')}
+              </table>`
+              : '<p>No credit records found.</p>'}
+          </div>`;
 
-        // DEBIT SECTION
-        let debitHtml = '<div class="ledger-section"><h2>Debit Ledgers</h2>';
-        if (data.debit.length > 0) {
-          debitHtml += '<table><tr><th>Bank Name</th><th>Ledger Name</th><th>Total</th></tr>';
-          data.debit.forEach(item => {
-            debitHtml += `<tr>
-              <td>${item.bankName}</td>
-              <td>${item.ledgerName}</td>
-              <td>₹${item.total}</td>
-            </tr>`;
-          });
-          debitHtml += '</table>';
-        } else {
-          debitHtml += '<p>No debit records found.</p>';
-        }
-        debitHtml += '</div>';
+        const debitHtml = `
+          <div class="ledger-section">
+            <h2>Debit Ledgers</h2>
+            ${data.debit.length > 0
+              ? `<table><tr><th>Bank Name</th><th>Ledger Name</th><th>Total</th></tr>
+                ${data.debit.map(item => `<tr><td>${item.bankName}</td><td>${item.ledgerName}</td><td>₹${item.total.toFixed(2)}</td></tr>`).join('')}
+              </table>`
+              : '<p>No debit records found.</p>'}
+          </div>`;
 
         container.innerHTML = creditHtml + debitHtml;
 
@@ -245,282 +284,25 @@
         alert('⚠️ Failed to fetch balance sheet.');
       }
     }
+
+    function downloadPDF() {
+      if (!currentPerson || !currentYear) {
+        alert('Please view balance sheet first.');
+        return;
+      }
+
+      const element = document.getElementById('pdfContent');
+      const opt = {
+        margin: 0.5,
+        filename: `BalanceSheet_${currentPerson}_${currentYear}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(element).save();
+    }
   </script>
 
 </body>
 </html>
-
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Balance Sheet</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f0f2f5;
-      margin: 0;
-      padding: 2rem;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: auto;
-      background-color: white;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    input, button {
-      padding: 0.6rem 1rem;
-      margin-right: 1rem;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    button {
-      background-color: #007bff;
-      color: white;
-      cursor: pointer;
-      border: none;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    .result-section {
-      display: flex;
-      gap: 2rem;
-      margin-top: 2rem;
-      flex-wrap: wrap;
-    }
-
-    .ledger-section {
-      flex: 1 1 45%;
-      background-color: #fafafa;
-      padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    }
-
-    .ledger-section h2 {
-      text-align: center;
-      color: #333;
-      margin-bottom: 1rem;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      padding: 0.75rem;
-      border: 1px solid #ddd;
-      text-align: left;
-    }
-
-    th {
-      background-color: #f1f1f1;
-    }
-
-    p {
-      text-align: center;
-      color: #666;
-    }
-
-    @media (max-width: 768px) {
-      .result-section {
-        flex-direction: column;
-      }
-
-      .ledger-section {
-        width: 100%;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <div class="container">
-    <h1>Balance Sheet Viewer</h1>
-
-    <div style="text-align: center;">
-      <label for="year">Enter Financial Year (e.g., 2024-25):</label>
-      <input type="text" id="year" placeholder="2024-25" />
-      <button onclick="fetchBalanceSheet()">View Balance Sheet</button>
-    </div>
-
-    <div class="result-section" id="balanceSheetResult"></div>
-  </div>
-
-  <script>
-    async function fetchBalanceSheet() {
-      const year = document.getElementById('year').value.trim();
-      if (!year) {
-        alert('Please enter a year');
-        return;
-      }
-
-      try {
-        const res = await fetch(`http://localhost:5000/api/balance-sheet/${year}`);
-        const data = await res.json();
-
-        const container = document.getElementById('balanceSheetResult');
-        container.innerHTML = '';
-
-        // CREDIT SECTION
-        let creditHtml = '<div class="ledger-section"><h2>Credit Ledgers</h2>';
-        if (data.credit.length > 0) {
-          creditHtml += '<table><tr><th>Bank Name</th><th>Ledger Name</th><th>Total</th></tr>';
-          data.credit.forEach(item => {
-            creditHtml += `<tr>
-              <td>${item.bankName}</td>
-              <td>${item.ledgerName}</td>
-              <td>${item.total}</td>
-            </tr>`;
-          });
-          creditHtml += '</table>';
-        } else {
-          creditHtml += '<p>No credit records found.</p>';
-        }
-        creditHtml += '</div>';
-
-        // DEBIT SECTION
-        let debitHtml = '<div class="ledger-section"><h2>Debit Ledgers</h2>';
-        if (data.debit.length > 0) {
-          debitHtml += '<table><tr><th>Bank Name</th><th>Ledger Name</th><th>Total</th></tr>';
-          data.debit.forEach(item => {
-            debitHtml += `<tr>
-              <td>${item.bankName}</td>
-              <td>${item.ledgerName}</td>
-              <td>${item.total}</td>
-            </tr>`;
-          });
-          debitHtml += '</table>';
-        } else {
-          debitHtml += '<p>No debit records found.</p>';
-        }
-        debitHtml += '</div>';
-
-        container.innerHTML = creditHtml + debitHtml;
-
-      } catch (error) {
-        console.error('Error fetching balance sheet:', error);
-        alert('Failed to fetch balance sheet');
-      }
-    }
-  </script>
-
-</body>
-</html> -->
-
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Balance Sheet</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 2rem;
-    }
-    input, button {
-      margin: 0.5rem;
-      padding: 0.5rem;
-    }
-    .section {
-      margin-top: 2rem;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
-    th, td {
-      padding: 0.75rem;
-      border: 1px solid #ccc;
-      text-align: left;
-    }
-  </style>
-</head>
-<body>
-
-  <h1>Balance Sheet Viewer</h1>
-
-  <label for="year">Enter Financial Year (e.g., 2024-25):</label>
-  <input type="text" id="year" placeholder="2024-25" />
-  <button onclick="fetchBalanceSheet()">View Balance Sheet</button>
-
-  <div class="section" id="balanceSheetResult"></div>
-
-  <script>
-    async function fetchBalanceSheet() {
-      const year = document.getElementById('year').value.trim();
-      if (!year) {
-        alert('Please enter a year');
-        return;
-      }
-
-      try {
-        const res = await fetch(`http://localhost:5000/api/balance-sheet/${year}`);
-        const data = await res.json();
-
-        const container = document.getElementById('balanceSheetResult');
-        container.innerHTML = '';
-
-        // CREDIT SECTION
-        let creditHtml = '<h2>Credit Ledgers</h2>';
-        if (data.credit.length > 0) {
-          creditHtml += '<table><tr><th>Bank Name</th><th>Ledger Name</th><th>Total</th></tr>';
-          data.credit.forEach(item => {
-            creditHtml += `<tr>
-              <td>${item.bankName}</td>
-              <td>${item.ledgerName}</td>
-              <td>${item.total}</td>
-            </tr>`;
-          });
-          creditHtml += '</table>';
-        } else {
-          creditHtml += '<p>No credit records found.</p>';
-        }
-
-        // DEBIT SECTION
-        let debitHtml = '<h2>Debit Ledgers</h2>';
-        if (data.debit.length > 0) {
-          debitHtml += '<table><tr><th>Bank Name</th><th>Ledger Name</th><th>Total</th></tr>';
-          data.debit.forEach(item => {
-            debitHtml += `<tr>
-              <td>${item.bankName}</td>
-              <td>${item.ledgerName}</td>
-              <td>${item.total}</td>
-            </tr>`;
-          });
-          debitHtml += '</table>';
-        } else {
-          debitHtml += '<p>No debit records found.</p>';
-        }
-
-        container.innerHTML = creditHtml + debitHtml;
-
-      } catch (error) {
-        console.error('Error fetching balance sheet:', error);
-        alert('Failed to fetch balance sheet');
-      }
-    }
-  </script>
-
-</body>
-</html> -->

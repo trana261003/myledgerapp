@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ledger Entries</title>
-  <script src="./cdn/lottie.min.js"></script>
+  <title>Person Ledger Entries</title>
   <style>
     * {
       box-sizing: border-box;
@@ -17,7 +16,6 @@
       color: #333;
     }
 
-    /* Navbar */
     nav {
       background-color: #005a9c;
       padding: 1rem 1.5rem;
@@ -168,17 +166,15 @@
       margin-top: 2rem;
     }
 
-    #loaderContainer {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      background-color: white;
+    .loading {
       display: flex;
-      align-items: center;
       justify-content: center;
-      z-index: 1000;
+      margin-top: 60px;
+    }
+
+    #loader {
+      width: 120px;
+      height: 120px;
     }
 
     @media (max-width: 600px) {
@@ -201,37 +197,40 @@
     }
   </style>
 </head>
-
 <body>
-  <!-- Loader -->
-  <div id="loaderContainer">
-    <div id="loader" style="width: 200px; height: 200px;"></div>
-  </div>
-
   <!-- Navbar -->
   <nav>
     <h2>📒 Ledger Manager</h2>
-    <div class="hamburger" id="hamburger">
+    <div class="hamburger" onclick="toggleMenu()">
       <span></span>
       <span></span>
       <span></span>
     </div>
     <div class="nav-links" id="navLinks">
-      <a href="index.html">Home</a>
-      <a href="personnames.html">Person Name</a>
-      <a href="balance.html">Balance Sheet</a>
-      <a href="ledger.html">Ledger Names</a>
+      <a href="index.html" onclick="closeMenu()">Home</a>
+      <a href="personnames.html" onclick="closeMenu()">Person Name</a>
+      <a href="balance.html" onclick="closeMenu()">Balance Sheet</a>
+      <a href="ledger.html" onclick="closeMenu()">Ledger Names</a>
     </div>
   </nav>
 
-  <h1>📘 Ledger Entries</h1>
+  <!-- Page Content -->
+  <h1>📘 Person Ledger Entries</h1>
   <div id="ledgerName"></div>
+
+  <!-- Loader -->
+  <div class="loading" id="loading">
+    <div id="loader"></div>
+  </div>
+
   <div id="entryList"></div>
 
+  <!-- Lottie player -->
+  <script src="./cdn/lottie.min.js"></script>
+
   <script>
-    // Lottie animation loader
-    const loaderContainer = document.getElementById('loaderContainer');
-    lottie.loadAnimation({
+    // Load Lottie animation
+    const loaderAnim = lottie.loadAnimation({
       container: document.getElementById('loader'),
       renderer: 'svg',
       loop: true,
@@ -239,39 +238,21 @@
       path: 'animations/Sandy Loading.json'
     });
 
-    // Toggle mobile nav
-    const hamburger = document.getElementById('hamburger');
-    const navLinks = document.getElementById('navLinks');
-
-    hamburger.addEventListener('click', () => {
-      navLinks.classList.toggle('active');
-    });
-
-    // Auto-close nav on link click (for mobile)
-    document.querySelectorAll('.nav-links a').forEach(link => {
-      link.addEventListener('click', () => {
-        if (window.innerWidth < 768) {
-          navLinks.classList.remove('active');
-        }
-      });
-    });
-
-    // Fetch ledger data
     async function fetchLedgerEntries() {
       const params = new URLSearchParams(window.location.search);
       const name = params.get('name');
-      document.getElementById('ledgerName').textContent = `Ledger Name: ${name}`;
+      document.getElementById('ledgerName').textContent = `Person Name: ${name}`;
 
       try {
-        const res = await fetch(`https://myledgerappbackend.onrender.com/api/ledger-entries/${encodeURIComponent(name)}`);
+        const res = await fetch(`https://myledgerappbackend.onrender.com/api/ledger-entries/person/${encodeURIComponent(name)}`);
         const data = await res.json();
 
         const container = document.getElementById('entryList');
         container.innerHTML = '';
+        document.getElementById('loading').style.display = 'none';
 
         if (!data.length) {
           container.innerHTML = '<div class="no-entries">No entries found.</div>';
-          loaderContainer.style.display = 'none';
           return;
         }
 
@@ -284,7 +265,7 @@
 
           const title = document.createElement('div');
           title.className = 'entry-header';
-          title.textContent = `Type: ${ledger.type} — Total: ₹${ledger.total}`;
+          title.textContent = `Type: ${ledger.type} — Total: ₹${Number(ledger.total).toFixed(2)}`;
 
           const year = document.createElement('div');
           year.className = 'entry-year';
@@ -296,7 +277,7 @@
 
           const meta = document.createElement('div');
           meta.className = 'entry-meta';
-          meta.textContent = `Bank Name: ${ledger.bankName} - Person Name: ${ledger.personName}`;
+          meta.textContent = `Bank Name: ${ledger.bankName} - Ledger Name: ${ledger.ledgerName}`;
           card.appendChild(meta);
 
           if (!ledger.entries || !ledger.entries.length) {
@@ -308,7 +289,7 @@
             ledger.entries.forEach(sub => {
               const subItem = document.createElement('div');
               subItem.className = 'sub-entry';
-              subItem.textContent = `Date: ${sub.date} — Amount: ₹${sub.amount}`;
+              subItem.textContent = `Date: ${sub.date} — Amount: ₹${Number(sub.amount).toFixed(2)}`;
               card.appendChild(subItem);
             });
           }
@@ -318,17 +299,22 @@
 
       } catch (error) {
         console.error('Error fetching ledger entries:', error);
+        document.getElementById('loading').style.display = 'none';
         document.getElementById('entryList').innerHTML =
           '<div class="no-entries">⚠️ Error loading data.</div>';
-      } finally {
-        loaderContainer.style.display = 'none';
       }
     }
 
     fetchLedgerEntries();
-        function toggleMenu() {
+
+    function toggleMenu() {
       document.getElementById('navLinks').classList.toggle('active');
+    }
+
+    function closeMenu() {
+      document.getElementById('navLinks').classList.remove('active');
     }
   </script>
 </body>
 </html>
+
