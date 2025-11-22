@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ledger Entries</title>
+    <link rel="stylesheet" href="globallogout.css">
+ <link rel="stylesheet" href="./css/all.min.css">
+<script src="logout.js" defer></script>
   <script src="./cdn/lottie.min.js"></script>
   <style>
     * {
@@ -245,7 +248,7 @@
       <span></span>
     </div>
     <div class="nav-links" id="navLinks">
-      <a href="index.html">Home</a>
+      <a href="home.html">Home</a>
       <a href="personnames.html">Person Name</a>
       <a href="balance.html">Balance Sheet</a>
       <a href="ledger.html">Ledger Names</a>
@@ -255,6 +258,14 @@
   <h1>📘 Ledger Entries</h1>
   <div id="ledgerName"></div>
   <div id="entryList"></div>
+
+  <script>
+  // Redirect user to login page if token missing
+  const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.href = "login.html"; // your login page
+  }
+</script>
 
   <script>
     // Lottie animation loader
@@ -288,7 +299,12 @@
       document.getElementById('ledgerName').textContent = `Ledger Name: ${name}`;
 
       try {
-        const res = await fetch(`https://myledgerappbackend.onrender.com/api/ledger-entries/${encodeURIComponent(name)}`);
+        // const res = await fetch(`https://myledgerappbackend.onrender.com/api/ledger-entries/${encodeURIComponent(name)}`);
+        const res = await fetch(`https://myledgerappbackend.onrender.com/api/ledger-entries/${encodeURIComponent(name)}`, {
+          headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+          }
+        });
         // const res = await fetch(`http://localhost:5000/api/ledger-entries/${encodeURIComponent(name)}`);
         const data = await res.json();
 
