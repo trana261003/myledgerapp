@@ -1,357 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create Ledger</title>
-  <script defer src="script.js"></script>
-  <script src="./cdn/lottie.min.js"></script>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Ledger Manager</title>
 
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f7fa;
-      color: #333;
-    }
+    <script src="./cdn/lottie.min.js"></script>
 
-    /* Navbar */
-    nav {
-      background-color: #005a9c;
-      padding: 1rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: white;
-      position: relative;
-      z-index: 10;
-    }
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", Arial, sans-serif;
+            background: linear-gradient(135deg, #007bff, #6dc4ff);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    nav h2 {
-      margin: 0;
-      font-size: 1.5rem;
-    }
+        /* Splash Screen */
+        #splashScreen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
 
-    .nav-links {
-      display: flex;
-      gap: 20px;
-    }
+        /* Loader Overlay */
+        #submitLoader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55);
+            z-index: 9998;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
 
-    .nav-links a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
+        /* Login Box */
+        .login-box {
+            width: 350px;
+            background: #ffffff;
+            padding: 35px 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            animation: fadeIn 0.8s ease;
+        }
 
-    .nav-links a:hover {
-      color: #ffc107;
-    }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      cursor: pointer;
-    }
+        .login-box h2 {
+            margin-bottom: 25px;
+            color: #333;
+            font-size: 26px;
+            font-weight: 600;
+        }
 
-    .hamburger span {
-      height: 3px;
-      width: 25px;
-      background: white;
-      margin: 4px 0;
-      border-radius: 2px;
-    }
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
 
-    @media (max-width: 768px) {
-      .hamburger {
-        display: flex;
-      }
+        .input-group label {
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
 
-      .nav-links {
-        display: none;
-        flex-direction: column;
-        background-color: #005a9c;
-        position: absolute;
-        top: 64px;
-        left: 0;
-        width: 100%;
-        padding: 1rem;
-      }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
 
-      .nav-links.active {
-        display: flex;
-      }
-    }
+        input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+        }
 
-    .container {
-      max-width: 700px;
-      margin: 2rem auto;
-      background-color: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
+        button:hover {
+            background: #0056b3;
+        }
 
-    form label {
-      display: block;
-      margin: 12px 0 6px;
-      font-weight: 600;
-    }
-
-    input,
-    select {
-      width: 100%;
-      padding: 0.6rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-
-    #entries {
-      margin: 1rem 0;
-    }
-
-    .entry-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
-
-    .entry-row input {
-      flex: 1;
-      min-width: 45%;
-    }
-
-    button {
-      padding: 0.7rem 1.2rem;
-      border: none;
-      border-radius: 6px;
-      background-color: #007bff;
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: background-color 0.3s;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    .total {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-top: 15px;
-    }
-
-    .links {
-      margin-top: 20px;
-      text-align: center;
-    }
-
-    .links a {
-      text-decoration: none;
-      color: #007bff;
-      margin: 0 10px;
-      font-weight: 600;
-    }
-
-    .links a:hover {
-      text-decoration: underline;
-    }
-
-    /* Splash screen */
-    #splashScreen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-
-    #lottie-animation {
-      width: 300px;
-      height: 300px;
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        padding: 1rem;
-      }
-    }
-  </style>
+        #message {
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 500;
+            color: red;
+        }
+    </style>
 </head>
 
 <body>
 
-  <!-- Splash screen -->
-  <div id="splashScreen">
-    <div id="lottie-animation"></div>
-  </div>
-  <!-- ADD THIS BELOW YOUR EXISTING splashScreen div -->
-<div id="submitLoader" style="display: none; position: fixed; top: 0; left: 0;
-  width: 100%; height: 100%; background: rgba(0, 0, 0, 0.576);
-  z-index: 9999; display: flex; align-items: center; justify-content: center; display: none; ">
-  <div id="submit-animation" style="width: 200px; height: 200px;"></div>
-</div>
-  <!-- Main Nav -->
-  <nav>
-    <h2>📒 Ledger Manager</h2>
-    <div class="hamburger" onclick="toggleMenu()">
-      <span></span>
-      <span></span>
-      <span></span>
+    <!-- Splash Screen -->
+    <div id="splashScreen">
+        <div id="lottie-animation" style="width: 300px; height: 300px;"></div>
     </div>
-    <div class="nav-links" id="navLinks">
-      <a href="index.html">Home</a>
-      <a href="personnames.html">Person Name</a>
-      <a href="balance.html">Balance Sheet</a>
-      <a href="ledger.html">Ledger Names</a>
 
+    <!-- Submit Loader -->
+    <div id="submitLoader">
+        <div id="submit-animation" style="width: 200px; height: 200px;"></div>
     </div>
-  </nav>
 
-  <div class="container">
-    <h1>Create New Ledger</h1>
-    <form id="ledgerForm">
-      <label for="personName">Person Name:</label>
-      <input type="text" id="personName" required>
+    <!-- Login Form -->
+    <div class="login-box">
+        <h2>🔐 Login</h2>
 
-      <label for="bankName">Bank Name:</label>
-      <input type="text" id="bankName" required>
+        <form id="loginForm">
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter username" required>
+            </div>
 
-      <label for="ledgerName">Ledger Name:</label>
-      <input type="text" id="ledgerName" required>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password" required>
+            </div>
 
-      <label for="type">Credit/Debit:</label>
-      <select id="type" required>
-        <option value="Credit">Credit</option>
-        <option value="Debit">Debit</option>
-      </select>
+            <button type="submit">Login</button>
+        </form>
 
-      <!-- <label for="year">Year:</label>
-      <select id="year" required>
-        <option value="2023-24">2023-24</option>
-        <option value="2024-25">2024-25</option>
-        <option value="2025-26">2025-26</option>
-        <option value="2026-27">2026-27</option>
-        <option value="2027-28">2027-28</option>
-        <option value="2028-29">2028-29</option>
-        <option value="2029-30">2029-30</option>
-      </select> -->
+        <p id="message"></p>
+    </div>
 
-      <label for="year">Year:</label>
-<select id="year" required></select>
+<script>
+/* ---------------- SPLASH SCREEN ---------------- */
+document.addEventListener("DOMContentLoaded", () => {
+    const splash = document.getElementById("splashScreen");
+    const splashSeen = sessionStorage.getItem("splashSeen");
 
-
-      <h3>Entries</h3>
-      <div id="entries"></div>
-      <button type="button" onclick="addEntry()">Add Entry</button>
-
-      <div class="total">Total: ₹<span id="totalAmount">0</span></div>
-
-      <button type="submit">Save Ledger</button>
-
-      <div class="links">
-        <a href="balance.html">Balance Sheet</a> |
-        <a href="ledger.html">Ledger Names</a>
-      </div>
-    </form>
-  </div>
-
-  <script>
-    // Lottie splash screen
-    document.addEventListener("DOMContentLoaded", () => {
-      const splash = document.getElementById("splashScreen");
-      const splashSeen = sessionStorage.getItem("splashSeen");
-
-      if (!splashSeen) {
+    if (!splashSeen) {
         lottie.loadAnimation({
-          container: document.getElementById('lottie-animation'),
-          renderer: 'svg',
-          loop: true,
-          autoplay: true,
-          path: 'animations/Sandy Loading.json'
+            container: document.getElementById('lottie-animation'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'animations/Sandy Loading.json'
         });
 
         setTimeout(() => {
-          splash.style.display = "none";
-          sessionStorage.setItem("splashSeen", "true");
-        }, 3000);
-      } else {
+            splash.style.display = "none";
+            sessionStorage.setItem("splashSeen", "true");
+        }, 2500);
+    } else {
         splash.style.display = "none";
-      }
-    });
-
-    // Mobile hamburger menu toggle
-    function toggleMenu() {
-      document.getElementById('navLinks').classList.toggle('active');
     }
+});
 
+/* ---------------- LOGIN FUNCTION ---------------- */
+document.getElementById("loginForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
 
-  const startYear = 2024; // starting year
-  const numYears = 50;    // how many years you want to show
-  const yearSelect = document.getElementById('year');
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const message = document.getElementById("message");
+    const loader = document.getElementById("submitLoader");
 
-  for (let i = 0; i < numYears; i++) {
-    const first = startYear + i;
-    const second = (first + 1).toString().slice(-2); // get last 2 digits of next year
-    const optionValue = `${first}-${second}`;
-    
-    const option = document.createElement('option');
-    option.value = optionValue;
-    option.textContent = optionValue;
-    yearSelect.appendChild(option);
-  }
+    message.textContent = "";
+    loader.style.display = "flex";
 
+    try {
+        const res = await fetch("https://myledgerappbackend.onrender.com/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
 
-      // Initialize Submit Lottie loader
-  const submitLoader = document.getElementById("submitLoader");
-  const submitAnim = lottie.loadAnimation({
-    container: document.getElementById("submit-animation"),
-    renderer: "svg",
-    loop: true,
-    autoplay: false,
-    path: "animations/loading.json"
-  });
+        const data = await res.json();
 
-  function showSubmitLoader() {
-    submitLoader.style.display = "flex";
-    submitAnim.play();
-  }
+        if (!res.ok) {
+            loader.style.display = "none";
+            message.textContent = data.msg || "Login failed";
+            return;
+        }
 
-  function hideSubmitLoader() {
-    submitAnim.stop();
-    submitLoader.style.display = "none";
-  }
+        localStorage.setItem("token", data.token);
 
+        // redirect after slight delay
+        setTimeout(() => {
+            window.location.href = "home.html";
+        }, 300);
 
-  </script>
+    } catch (err) {
+        loader.style.display = "none";
+        message.textContent = "Something went wrong";
+    }
+});
+</script>
 
 </body>
-
 </html>
-
-
-
-
-
-
-
-
