@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ledger Names</title>
+    <link rel="stylesheet" href="globallogout.css">
+ <link rel="stylesheet" href="./css/all.min.css">
+<script src="logout.js" defer></script>
   <style>
     * {
       box-sizing: border-box;
@@ -153,6 +157,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <nav>
@@ -163,7 +168,7 @@
       <span></span>
     </div>
     <div class="nav-links" id="navLinks">
-      <a href="index.html">Home</a>
+      <a href="home.html">Home</a>
       <a href="personnames.html">Person Name</a>
       <a href="balance.html">Balance Sheet</a>
       <a href="ledger.html">Ledger Names</a>
@@ -183,6 +188,14 @@
   <script src="./cdn/lottie.min.js"></script>
 
   <script>
+    // Redirect user to login page if token missing
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "login.html"; // your login page
+    }
+  </script>
+
+  <script>
     // Load animation
     const loader = lottie.loadAnimation({
       container: document.getElementById('loader'),
@@ -194,7 +207,13 @@
 
     async function fetchLedgerNames() {
       try {
-        const res = await fetch('https://myledgerappbackend.onrender.com/api/ledger-names');
+        // const res = await fetch('https://myledgerappbackend.onrender.com/api/ledger-names');
+        const res = await fetch(`https://myledgerappbackend.onrender.com/api/ledger-names`, {
+          headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+          }
+        });
+        // const res = await fetch('http://localhost:5000/api/ledger-names');
         const names = await res.json();
 
         const list = document.getElementById('ledgerList');
@@ -218,15 +237,11 @@
     }
 
     fetchLedgerNames();
-        function toggleMenu() {
+    function toggleMenu() {
       document.getElementById('navLinks').classList.toggle('active');
     }
   </script>
 
 </body>
+
 </html>
-
-
-
-
-
