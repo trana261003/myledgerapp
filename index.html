@@ -7,7 +7,7 @@
 
     <script src="./cdn/lottie.min.js"></script>
 
-    <style>
+    <!-- <style>
         body {
             margin: 0;
             padding: 0;
@@ -116,7 +116,161 @@
             font-weight: 500;
             color: red;
         }
-    </style>
+    </style> -->
+
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: "Poppins", Arial, sans-serif;
+        background: linear-gradient(135deg, #007bff, #6dc4ff);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Splash Screen */
+    #splashScreen {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    /* Loader Overlay */
+    #submitLoader {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.55);
+        z-index: 9998;
+        display: none;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Login Box */
+    .login-box {
+        width: 350px;
+        background: #ffffff;
+        padding: 35px 30px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .login-box h2 {
+        margin-bottom: 25px;
+        color: #333;
+        font-size: 26px;
+        font-weight: 600;
+    }
+
+    .input-group {
+        margin-bottom: 15px;
+        text-align: left;
+    }
+
+    .input-group label {
+        font-size: 14px;
+        color: #555;
+        font-weight: 500;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        margin-top: 6px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 15px;
+        outline: none;
+        transition: 0.2s;
+    }
+
+    input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 18px;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: 0.2s;
+    }
+
+    button:hover {
+        background: #0056b3;
+    }
+
+    #message {
+        margin-top: 15px;
+        font-size: 14px;
+        font-weight: 500;
+        color: red;
+    }
+
+    /* ------------------- MOBILE RESPONSIVE ------------------- */
+    @media (max-width: 400px) {
+        .login-box {
+            width: 90%;
+            padding: 25px 20px;
+        }
+
+        .login-box h2 {
+            font-size: 22px;
+        }
+
+        input, button {
+            font-size: 16px;
+            padding: 10px;
+        }
+
+        #lottie-animation {
+            width: 200px !important;
+            height: 200px !important;
+        }
+
+        #submit-animation {
+            width: 150px !important;
+            height: 150px !important;
+        }
+    }
+
+    @media (max-width: 320px) {
+        .login-box {
+            padding: 20px 15px;
+        }
+
+        .login-box h2 {
+            font-size: 20px;
+        }
+
+        input, button {
+            font-size: 15px;
+            padding: 8px;
+        }
+    }
+</style>
+
 </head>
 
 <body>
@@ -219,3 +373,4 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 
 </body>
 </html>
+
