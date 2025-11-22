@@ -4,16 +4,32 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ledger Names</title>
+    <link rel="stylesheet" href="globallogout.css">
+ <link rel="stylesheet" href="./css/all.min.css">
+<script src="logout.js" defer></script>
 </head>
 <body>
   <h1>Ledger Names</h1>
   <ul id="ledgerList"></ul>
 
+<script>
+  // Redirect user to login page if token missing
+  const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.href = "index.html"; // your login page
+  }
+</script>
+
   <script>
     async function fetchLedgerNames() {
       try {
         // const res = await fetch('http://localhost:5000/api/ledger-names');
-        const res = await fetch('https://myledgerappbackend.onrender.com/api/ledger-names');
+        // const res = await fetch('https://myledgerappbackend.onrender.com/api/ledger-names');
+        const res = await fetch(`https://myledgerappbackend.onrender.com/api/ledger-names`, {
+          headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+          }
+        });
         const names = await res.json();
 
         const list = document.getElementById('ledgerList');
