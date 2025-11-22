@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Balance Sheet</title>
+    <link rel="stylesheet" href="globallogout.css">
+ <link rel="stylesheet" href="./css/all.min.css">
+<script src="logout.js" defer></script>
   <script src="./cdn/html2pdf.bundle.min.js"></script>
   <style>
     * {
@@ -96,7 +100,8 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
-    h1, h2 {
+    h1,
+    h2 {
       text-align: center;
       margin-bottom: 1rem;
       color: #00796b;
@@ -155,7 +160,8 @@
       margin-top: 1rem;
     }
 
-    th, td {
+    th,
+    td {
       padding: 0.75rem;
       border: 1px solid #ddd;
       text-align: left;
@@ -180,7 +186,8 @@
         align-items: center;
       }
 
-      .input-section input, .input-section button {
+      .input-section input,
+      .input-section button {
         width: 100%;
         max-width: 300px;
       }
@@ -203,7 +210,7 @@
       <span></span>
     </div>
     <div class="nav-links" id="navLinks">
-      <a href="index.html">Home</a>
+      <a href="home.html">Home</a>
       <a href="personnames.html">Person Name</a>
       <a href="balance.html">Balance Sheet</a>
       <a href="ledger.html">Ledger Names</a>
@@ -226,6 +233,13 @@
       <div class="result-section" id="balanceSheetResult"></div>
     </div>
   </div>
+  <script>
+    // Redirect user to login page if token missing
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "login.html"; // your login page
+    }
+  </script>
 
   <script>
     let currentPerson = '';
@@ -249,7 +263,13 @@
 
       try {
         const encodedPerson = encodeURIComponent(personName);
-        const res = await fetch(`https://myledgerappbackend.onrender.com/api/balance-sheet/${year}/${encodedPerson}`);
+        // const res = await fetch(`https://myledgerappbackend.onrender.com/api/balance-sheet/${year}/${encodedPerson}`);
+        const res = await fetch(`https://myledgerappbackend.onrender.com/api/balance-sheet/${year}/${encodedPerson}`, {
+          headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+          }
+        });
+        // const res = await fetch(`http://localhost:5000/api/balance-sheet/${year}/${encodedPerson}`);
         const data = await res.json();
 
         document.getElementById('sheetHeader').innerText = `Balance Sheet for ${personName} (${year})`;
@@ -261,20 +281,20 @@
           <div class="ledger-section">
             <h2>Credit Ledgers</h2>
             ${data.credit.length > 0
-              ? `<table><tr><th>Bank Name</th><th>Ledger Name</th><th>Total</th></tr>
+            ? `<table><tr><th>Bank Name</th><th>Ledger Name</th><th>Total</th></tr>
                 ${data.credit.map(item => `<tr><td>${item.bankName}</td><td>${item.ledgerName}</td><td>₹${item.total.toFixed(2)}</td></tr>`).join('')}
               </table>`
-              : '<p>No credit records found.</p>'}
+            : '<p>No credit records found.</p>'}
           </div>`;
 
         const debitHtml = `
           <div class="ledger-section">
             <h2>Debit Ledgers</h2>
             ${data.debit.length > 0
-              ? `<table><tr><th>Bank Name</th><th>Ledger Name</th><th>Total</th></tr>
+            ? `<table><tr><th>Bank Name</th><th>Ledger Name</th><th>Total</th></tr>
                 ${data.debit.map(item => `<tr><td>${item.bankName}</td><td>${item.ledgerName}</td><td>₹${item.total.toFixed(2)}</td></tr>`).join('')}
               </table>`
-              : '<p>No debit records found.</p>'}
+            : '<p>No debit records found.</p>'}
           </div>`;
 
         container.innerHTML = creditHtml + debitHtml;
@@ -305,4 +325,5 @@
   </script>
 
 </body>
+
 </html>
