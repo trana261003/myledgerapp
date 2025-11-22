@@ -118,16 +118,15 @@
         }
     </style> -->
 
-    <style>
-    body {
-        margin: 0;
-        padding: 0;
+  <style>
+    /* Basic Reset */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body, html {
+        width: 100%;
+        height: 100%;
         font-family: "Poppins", Arial, sans-serif;
         background: linear-gradient(135deg, #007bff, #6dc4ff);
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
     }
 
     /* Splash Screen */
@@ -135,11 +134,16 @@
         position: fixed;
         top: 0; left: 0;
         width: 100%; height: 100%;
-        background: white;
+        background: #ffffff;
         display: flex;
         justify-content: center;
         align-items: center;
         z-index: 9999;
+    }
+
+    #lottie-animation {
+        width: 300px;
+        height: 300px;
     }
 
     /* Loader Overlay */
@@ -148,37 +152,47 @@
         top: 0; left: 0;
         width: 100%; height: 100%;
         background: rgba(0,0,0,0.55);
-        z-index: 9998;
         display: none;
         justify-content: center;
         align-items: center;
+        z-index: 9998;
+    }
+
+    #submit-animation {
+        width: 200px;
+        height: 200px;
     }
 
     /* Login Box */
     .login-box {
-        width: 350px;
-        background: #ffffff;
-        padding: 35px 30px;
-        border-radius: 15px;
+        width: 400px;
+        max-width: 95%;
+        padding: 40px 30px;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         text-align: center;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         animation: fadeIn 0.8s ease;
     }
 
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+        from { opacity: 0; transform: translate(-50%, -40%); }
+        to { opacity: 1; transform: translate(-50%, -50%); }
     }
 
     .login-box h2 {
+        font-size: 28px;
+        font-weight: 600;
         margin-bottom: 25px;
         color: #333;
-        font-size: 26px;
-        font-weight: 600;
     }
 
     .input-group {
-        margin-bottom: 15px;
+        margin-bottom: 18px;
         text-align: left;
     }
 
@@ -186,35 +200,35 @@
         font-size: 14px;
         color: #555;
         font-weight: 500;
+        display: block;
+        margin-bottom: 5px;
     }
 
     input {
         width: 100%;
         padding: 12px;
-        margin-top: 6px;
+        border-radius: 8px;
         border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 15px;
+        font-size: 16px;
         outline: none;
-        transition: 0.2s;
+        transition: all 0.3s;
     }
 
     input:focus {
         border-color: #007bff;
-        box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+        box-shadow: 0 0 8px rgba(0,123,255,0.3);
     }
 
     button {
         width: 100%;
-        padding: 12px;
-        background: #007bff;
-        color: white;
-        border: none;
-        border-radius: 6px;
+        padding: 14px;
         font-size: 18px;
+        background: #007bff;
+        border: none;
+        border-radius: 10px;
+        color: #fff;
         cursor: pointer;
-        margin-top: 10px;
-        transition: 0.2s;
+        transition: all 0.3s;
     }
 
     button:hover {
@@ -224,49 +238,45 @@
     #message {
         margin-top: 15px;
         font-size: 14px;
-        font-weight: 500;
         color: red;
     }
 
-    /* ------------------- MOBILE RESPONSIVE ------------------- */
-    @media (max-width: 400px) {
+    /* ---------------- RESPONSIVE FOR MOBILE ---------------- */
+    @media (max-width: 500px) {
         .login-box {
             width: 90%;
-            padding: 25px 20px;
+            padding: 30px 20px;
+            border-radius: 15px;
         }
 
+        .login-box h2 {
+            font-size: 24px;
+        }
+
+        input, button {
+            font-size: 16px;
+            padding: 12px;
+        }
+
+        #lottie-animation {
+            width: 200px;
+            height: 200px;
+        }
+
+        #submit-animation {
+            width: 150px;
+            height: 150px;
+        }
+    }
+
+    @media (max-width: 350px) {
         .login-box h2 {
             font-size: 22px;
         }
 
         input, button {
-            font-size: 16px;
-            padding: 10px;
-        }
-
-        #lottie-animation {
-            width: 200px !important;
-            height: 200px !important;
-        }
-
-        #submit-animation {
-            width: 150px !important;
-            height: 150px !important;
-        }
-    }
-
-    @media (max-width: 320px) {
-        .login-box {
-            padding: 20px 15px;
-        }
-
-        .login-box h2 {
-            font-size: 20px;
-        }
-
-        input, button {
             font-size: 15px;
-            padding: 8px;
+            padding: 10px;
         }
     }
 </style>
@@ -373,4 +383,5 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 
 </body>
 </html>
+
 
