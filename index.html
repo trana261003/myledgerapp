@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | Ledger Manager</title>
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#007bff">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icon-192.png">
+
 
     <script src="./cdn/lottie.min.js"></script>
 
@@ -380,8 +387,17 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
     }
 });
 </script>
+    <script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js")
+    .then(() => console.log("Service Worker Registered"))
+    .catch(err => console.log("SW registration failed", err));
+}
+</script>
+
 
 </body>
 </html>
+
 
 
