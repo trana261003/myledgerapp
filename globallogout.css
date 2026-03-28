@@ -1,17 +1,63 @@
-/* Completely Redesigned Floating Logout Button */
+/* Floating Logout Button (Clean + Clear) */
 .floating-logout {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 30px;
+  height: 30px;
+
+  /* Logout Color */
+  background: linear-gradient(135deg, #ff4d4d, #cc0000);
+
+  border-radius: 14px;
+
+  /* Shadow */
+  box-shadow: 
+    0 8px 20px rgba(255, 0, 0, 0.3);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 9999;
+
+  transition: all 0.25s ease;
+}
+
+/* Hover Effect */
+.floating-logout:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 
+    0 12px 28px rgba(255, 0, 0, 0.5);
+}
+
+/* Click Effect */
+.floating-logout:active {
+  transform: scale(0.95);
+}
+
+/* Icon Style */
+.floating-logout i {
+  color: #fff;
+  font-size: 14px;
+}
+
+
+/* ======================= old working ====================== */
+/* Completely Redesigned Floating Logout Button */
+/* .floating-logout {
   position: fixed;
   bottom: 30px;
   right: 30px;
   width: 65px;
   height: 65px;
 
-  /* Glassmorphism */
+
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(12px);
   border-radius: 20px;
 
-  /* Neon Border */
+
   border: 2px solid rgba(255, 255, 255, 0.25);
   box-shadow:
     0 0 15px rgba(255, 0, 70, 0.4),
@@ -28,7 +74,7 @@
   position: fixed;
 }
 
-/* Ripple Hover Effect */
+
 .floating-logout::before {
   content: "";
   position: absolute;
@@ -47,7 +93,7 @@
   height: 180px;
 }
 
-/* Button Hover */
+
 .floating-logout:hover {
   transform: translateY(-8px) scale(1.08);
   box-shadow:
@@ -55,7 +101,7 @@
     0 15px 35px rgba(0, 0, 0, 0.35);
 }
 
-/* Icon Style */
+
 .floating-logout i {
   color: #ffffff;
   font-size: 28px;
@@ -63,7 +109,7 @@
   text-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
 }
 
-/* Attention Pulse Animation */
+
 @keyframes floatPulse {
   0% {
     transform: translateY(0);
@@ -78,4 +124,4 @@
 
 .floating-logout {
   animation: floatPulse 3s ease-in-out infinite;
-}
+} */
