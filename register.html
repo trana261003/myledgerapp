@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register | Ledger Manager</title>
+  <script src="./cdn/lottie.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      font-family: "Poppins", Arial, sans-serif;
+      background: linear-gradient(135deg, #007bff, #6dc4ff);
+    }
+
+    .register-box {
+      width: 400px;
+      max-width: 95%;
+      padding: 40px 30px;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      text-align: center;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .register-box h2 {
+      font-size: 28px;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+      text-align: left;
+    }
+
+    .input-group label {
+      font-size: 14px;
+      color: #555;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 8px rgba(0,123,255,0.3);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 18px;
+      background: #007bff;
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      cursor: pointer;
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #btnLoader {
+      width: 35px;
+      height: 35px;
+      display: none;
+    }
+
+    #message {
+      margin-top: 15px;
+      font-size: 14px;
+      color: red;
+    }
+
+    .login-link {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .login-link a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="register-box">
+    <h2>📝 Register</h2>
+
+    <form id="registerForm">
+      <div class="input-group">
+        <label>Username</label>
+        <input type="text" id="username" placeholder="Enter Username" required />
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Enter Password" required />
+      </div>
+
+      <button type="submit" id="registerBtn">
+        <span id="btnText">Register</span>
+        <span id="btnLoader"></span>
+      </button>
+
+      <p id="message"></p>
+    </form>
+
+    <div class="login-link">
+      Already have an account? <a href="index.html">Login</a>
+    </div>
+  </div>
+
+<script>
+
+const loaderAnim = lottie.loadAnimation({
+  container: document.getElementById('btnLoader'),
+  renderer: 'svg',
+  loop: true,
+  autoplay: false,
+  path: 'animations/loading.json'
+});
+
+const form = document.getElementById('registerForm');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value.trim();
+
+  const btn = document.getElementById('registerBtn');
+  const text = document.getElementById('btnText');
+  const loader = document.getElementById('btnLoader');
+  const message = document.getElementById('message');
+
+  message.textContent = '';
+
+  btn.disabled = true;
+  text.style.display = 'none';
+  loader.style.display = 'block';
+  loaderAnim.play();
+
+  try {
+    const res = await fetch('https://myledgerappbackend.onrender.com/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.msg);
+
+    message.style.color = 'green';
+    message.textContent = 'Registered successfully! Redirecting...';
+
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 1500);
+
+  } catch (err) {
+    message.style.color = 'red';
+    message.textContent = err.message || 'Registration failed';
+
+    btn.disabled = false;
+    text.style.display = 'block';
+    loader.style.display = 'none';
+    loaderAnim.stop();
+  }
+});
+
+</script>
+
+</body>
+</html>
