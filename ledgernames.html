@@ -33,6 +33,7 @@
         const names = await res.json();
 
         const list = document.getElementById('ledgerList');
+        // list.innerHTML = '';
         list.innerHTML = '';
 
         names.forEach(name => {
