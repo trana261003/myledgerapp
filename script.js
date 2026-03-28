@@ -122,7 +122,8 @@ document.getElementById("ledgerForm").addEventListener("submit", async function 
     const res = await fetch("https://myledgerappbackend.onrender.com/api/ledger", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
       },
       body: JSON.stringify(data)
     });
